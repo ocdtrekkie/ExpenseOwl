@@ -48,6 +48,7 @@ func runServer() {
 	http.HandleFunc("/expense", handler.AddExpense)
 	http.HandleFunc("/expenses", handler.GetExpenses)
 	http.HandleFunc("/table", handler.ServeTableView)
+	http.HandleFunc("/api-setup", handler.ServeAPISetupView)
 	http.HandleFunc("/expense/delete", handler.DeleteExpense)
 	http.HandleFunc("/manifest.json", handler.ServeManifest)
 	http.HandleFunc("/chart.js", handler.ServeChartJS)

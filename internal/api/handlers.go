@@ -107,6 +107,18 @@ func (h *Handler) ServeTableView(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *Handler) ServeAPISetupView(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	w.Header().Set("Cpntent-Type", "text/html")
+	if err := web.ServeTemplate(w, "api-setup.html"); err != nil {
+		http.Error(w, "Failed to serve template", http.StatusInternalServerError)
+		return
+	}
+}
+
 func (h *Handler) DeleteExpense(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
