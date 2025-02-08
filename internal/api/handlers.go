@@ -153,6 +153,14 @@ func (h *Handler) ServeManifest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *Handler) ServeChartJS(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/javascript")
+	if err := web.ServeTemplate(w, "chart.js"); err != nil {
+		http.Error(w, "Failed to serve chart.js", http.StatusInternalServerError)
+		return
+	}
+}
+
 func (h *Handler) ServeServiceWorker(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/javascript")
 	if err := web.ServeTemplate(w, "sw.js"); err != nil {
