@@ -69,9 +69,13 @@ func NewConfig() *Config {
 			currency = symbol
 		}
 	}
+	storagePath := "./data" // Default to ./data
+	if envStoragePath := os.Getenv("DATA_DIR"); envStoragePath != "" {
+		storagePath = envStoragePath
+	}
 	return &Config{
 		ServerPort:  "8080",
-		StoragePath: "./data",
+		StoragePath: storagePath,
 		Categories:  categories,
 		Currency:    currency,
 	}
