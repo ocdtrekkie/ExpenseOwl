@@ -21,9 +21,7 @@ const pkgdef :Spk.PackageDefinition = (
 
     appVersion = 0,  # Increment this for every release.
 
-    appMarketingVersion = (defaultText = "3.9"),
-    # Human-readable representation of appVersion. Should match the way you
-    # identify versions of your app in documentation and marketing.
+    appMarketingVersion = (defaultText = "3.11"),
 
     actions = [
       # Define your "new document" handlers here.
@@ -47,25 +45,19 @@ const pkgdef :Spk.PackageDefinition = (
       # and (in deeper detail) in the sandstorm source code, in the Metadata section of
       # https://github.com/sandstorm-io/sandstorm/blob/master/src/sandstorm/package.capnp
       icons = (
-        # Various icons to represent the app in various contexts.
-        #appGrid = (svg = embed "path/to/appgrid-128x128.svg"),
-        #grain = (svg = embed "path/to/grain-24x24.svg"),
-        #market = (svg = embed "path/to/market-150x150.svg"),
-        #marketBig = (svg = embed "path/to/market-big-300x300.svg"),
+        appGrid = (png = (dpi1x = embed "../internal/web/templates/pwa/icon-192.png")),
+        grain = (png = (dpi1x = embed "../internal/web/templates/pwa/icon-192.png")),
+        market = (png = (dpi1x = embed "../internal/web/templates/pwa/icon-192.png")),
+        marketBig = (png = (dpi1x = embed "../internal/web/templates/pwa/icon-512.png")),
       ),
 
-      website = "http://example.com",
-      # This should be the app's main website url.
+      website = "https://github.com/ocdtrekkie/ExpenseOwl",
 
-      codeUrl = "http://example.com",
-      # URL of the app's source code repository, e.g. a GitHub URL.
-      # Required if you specify a license requiring redistributing code, but optional otherwise.
+      codeUrl = "https://github.com/ocdtrekkie/ExpenseOwl",
 
-      license = (none = void),
-      # The license this package is distributed under.  See
-      # https://docs.sandstorm.io/en/latest/developing/publishing-apps/#license
+      license = (openSource = mit),
 
-      categories = [],
+      categories = [office, productivity],
       # A list of categories/genres to which this app belongs, sorted with best fit first.
       # See the list of categories at
       # https://docs.sandstorm.io/en/latest/developing/publishing-apps/#categories
@@ -89,7 +81,7 @@ const pkgdef :Spk.PackageDefinition = (
         # Further details including how to set up GPG and how to use keybase.io can be found
         # at https://docs.sandstorm.io/en/latest/developing/publishing-apps/#verify-your-identity
 
-        upstreamAuthor = "Tanishq",
+        upstreamAuthor = "Tanishq Rupaal",
       ),
 
       #pgpKeyring = embed "path/to/pgp-keyring",
@@ -102,23 +94,14 @@ const pkgdef :Spk.PackageDefinition = (
       #
       # Where `<key-id>` is a PGP key ID or email address associated with the key.
 
-      #description = (defaultText = embed "path/to/description.md"),
-      # The app's description in Github-flavored Markdown format, to be displayed e.g.
-      # in an app store. Note that the Markdown is not permitted to contain HTML nor image tags (but
-      # you can include a list of screenshots separately).
+      description = (defaultText = embed "description.md"),
 
-      shortDescription = (defaultText = "one-to-three words"),
-      # A very short (one-to-three words) description of what the app does. For example,
-      # "Document editor", or "Notetaking", or "Email client". This will be displayed under the app
-      # title in the grid view in the app market.
+      shortDescription = (defaultText = "Simple expense tracker"),
 
       screenshots = [
-        # Screenshots to use for marketing purposes.  Examples below.
-        # Sizes are given in device-independent pixels, so if you took these
-        # screenshots on a Retina-style high DPI screen, divide each dimension by two.
-
-        #(width = 746, height = 795, jpeg = embed "path/to/screenshot-1.jpeg"),
-        #(width = 640, height = 480, png = embed "path/to/screenshot-2.png"),
+        (width = 1403, height = 1078, png = embed "../assets/dashboard-desktop-dark.png"),
+        (width = 1409, height = 1025, png = embed "../assets/table-desktop-light.png"),
+		(width = 424, height = 922, png = embed "../assets/table-mobile-dark.png"),
       ],
       #changeLog = (defaultText = embed "path/to/sandstorm-specific/changelog.md"),
       # Documents the history of changes in Github-flavored markdown format (with the same restrictions
