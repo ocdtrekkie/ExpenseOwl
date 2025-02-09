@@ -34,7 +34,7 @@ var categories = []string{
 
 func runServer() {
 	cfg := config.NewConfig()
-	dataDir := cfg.StoragePath
+	dataDir := "./data"
 	if err := os.MkdirAll(dataDir, 0755); err != nil {
 		log.Fatalf("Failed to create data directory: %v", err)
 	}
