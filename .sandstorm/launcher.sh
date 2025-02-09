@@ -1,1 +1,1 @@
-DATA_DIR="/var/data" exec /opt/app/main
+exec /opt/app/main -data "/var/data"
