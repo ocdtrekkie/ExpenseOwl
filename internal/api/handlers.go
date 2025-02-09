@@ -150,6 +150,22 @@ func (h *Handler) ServeCSS(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *Handler) ServeFACSS(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/css")
+	if err := web.ServeTemplate(w, "all.min.css"); err != nil {
+		http.Error(w, "Failed to serve FontAwesome stylesheet", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *Handler) ServeFAWOFF(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "font/woff2")
+	if err := web.ServeTemplate(w, "webfonts/fa-solid-900.woff2"); err != nil {
+		http.Error(w, "Failed to serve FontAwesome font", http.StatusInternalServerError)
+		return
+	}
+}
+
 func (h *Handler) ServeFavicon(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image/x-icon")
 	if err := web.ServeTemplate(w, "favicon.ico"); err != nil {

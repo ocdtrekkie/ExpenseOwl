@@ -43,6 +43,8 @@ func runServer(dataPath string) {
 	http.HandleFunc("/sw.js", handler.ServeServiceWorker)
 	http.HandleFunc("/pwa/", handler.ServePWAIcon)
 	http.HandleFunc("/style.css", handler.ServeCSS)
+	http.HandleFunc("/all.min.css", handler.ServeFACSS)
+	http.HandleFunc("/webfonts/fa-solid-900.woff2", handler.ServeFAWOFF)
 	http.HandleFunc("/favicon.ico", handler.ServeFavicon)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
