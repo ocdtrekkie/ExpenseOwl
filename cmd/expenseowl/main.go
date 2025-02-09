@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -19,26 +20,12 @@ import (
 	"github.com/tanq16/expenseowl/internal/web"
 )
 
-var categories = []string{
-	"Food",
-	"Groceries",
-	"Travel",
-	"Rent",
-	"Utilities",
-	"Entertainment",
-	"Subscriptions",
-	"Healthcare",
-	"Shopping",
-	"Miscellaneous",
-}
-
-func runServer() {
-	cfg := config.NewConfig()
-	dataDir := cfg.StoragePath
-	if err := os.MkdirAll(dataDir, 0755); err != nil {
+func runServer(dataPath string) {
+	cfg := config.NewConfig(dataPath)
+	if err := os.MkdirAll(cfg.StoragePath, 0755); err != nil {
 		log.Fatalf("Failed to create data directory: %v", err)
 	}
-	storage, err := jsonfile.New(dataDir + "/expenses.json")
+	storage, err := jsonfile.New(filepath.Join(cfg.StoragePath, "expenses.json"))
 	if err != nil {
 		log.Fatalf("Failed to initialize storage: %v", err)
 	}
@@ -50,6 +37,7 @@ func runServer() {
 	http.HandleFunc("/table", handler.ServeTableView)
 	http.HandleFunc("/api-setup", handler.ServeAPISetupView)
 	http.HandleFunc("/expense/delete", handler.DeleteExpense)
+	http.HandleFunc("/export", handler.ExportCSV)
 	http.HandleFunc("/manifest.json", handler.ServeManifest)
 	http.HandleFunc("/chart.js", handler.ServeChartJS)
 	http.HandleFunc("/sw.js", handler.ServeServiceWorker)
@@ -86,19 +74,18 @@ func readNonEmptyInput(prompt string) string {
 	}
 }
 
-func getCategory() string {
+func getCategory(cfg *config.Config) string {
 	fmt.Println("\nAvailable categories:")
-	for i, category := range categories {
+	for i, category := range cfg.Categories {
 		fmt.Printf("%d. %s\n", i+1, category)
 	}
 	for {
-		fmt.Print("\nSelect category (1-8): ")
+		fmt.Print("\nSelect category: ")
 		reader := bufio.NewReader(os.Stdin)
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
-
-		if num, err := strconv.Atoi(input); err == nil && num >= 1 && num <= len(categories) {
-			return categories[num-1]
+		if num, err := strconv.Atoi(input); err == nil && num >= 1 && num <= len(cfg.Categories) {
+			return cfg.Categories[num-1]
 		}
 		fmt.Println("Invalid selection. Please try again.")
 	}
@@ -136,8 +123,9 @@ func getDate() time.Time {
 }
 
 func runClient(serverAddr string) {
+	cfg := config.NewConfig("data") // Default data path hardcoded for client
 	name := readNonEmptyInput("Enter expense name: ")
-	category := getCategory()
+	category := getCategory(cfg)
 	amount := getAmount()
 	date := getDate()
 	expense := api.ExpenseRequest{
@@ -174,11 +162,12 @@ func main() {
 	isServer := flag.Bool("serve", true, "Run as server (default true)")
 	isClient := flag.Bool("client", false, "Run as client")
 	serverAddr := flag.String("addr", "localhost:8080", "Server address (for client mode)")
+	dataPath := flag.String("data", "data", "Path to data directory")
 	flag.Parse()
 	// If both flags are provided, prefer client mode
 	if *isClient {
 		runClient(*serverAddr)
 	} else if *isServer {
-		runServer()
+		runServer(*dataPath)
 	}
 }
