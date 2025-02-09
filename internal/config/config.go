@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -55,7 +56,7 @@ var currencySymbols = map[string]string{
 	"myr": "RM",   // Malaysian Ringgit
 }
 
-func NewConfig() *Config {
+func NewConfig(dataPath string) *Config {
 	categories := defaultCategories
 	if envCategories := os.Getenv("EXPENSE_CATEGORIES"); envCategories != "" {
 		categories = strings.Split(envCategories, ",")
@@ -69,9 +70,15 @@ func NewConfig() *Config {
 			currency = symbol
 		}
 	}
+	finalPath := ""
+	if dataPath == "data" {
+		finalPath = filepath.Join(".", "data")
+	} else {
+		finalPath = filepath.Clean(dataPath)
+	}
 	return &Config{
 		ServerPort:  "8080",
-		StoragePath: "./data",
+		StoragePath: finalPath,
 		Categories:  categories,
 		Currency:    currency,
 	}
