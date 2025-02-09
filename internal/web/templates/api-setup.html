@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <title>ExpenseOwl REST API</title>
+    <script>
+        function requestIframeURL() {
+          var template = "http://username:$API_TOKEN@$API_HOST";
+          window.parent.postMessage({renderTemplate: {
+            rpcId: "0",
+            template: template,
+            clipboardButton: 'left'
+          }}, "*");
+        }
+
+        document.addEventListener("DOMContentLoaded", requestIframeURL);
+
+        var copyIframeURLToElement = function(event) {
+          if (event.data.rpcId === "0") {
+            if (event.data.error) {
+            console.log("ERROR: " + event.data.error);
+            } else {
+            var el = document.getElementById("offer-iframe");
+            el.setAttribute("src", event.data.uri);
+            }
+          }
+        };
+
+        window.addEventListener("message", copyIframeURLToElement);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 align="center">ExpenseOwl</h1>
+            <div class="nav-bar">
+                <a href="/" class="view-button" data-tooltip="Dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </a>
+                <a href="/table" class="view-button" data-tooltip="Table View">
+                    <i class="fa-solid fa-table"></i>
+                </a>
+                <a href="/export" class="view-button" download="expenses.csv" data-tooltip="All expenses to CSV">
+                    <i class="fa-solid fa-file-csv"></i>
+                </a>
+                <a href="/api-setup" class="view-button active" data-tooltip="REST API Setup">
+                    <i class="fa-solid fa-gears"></i>
+                </a>
+            </div>
+        </header>
+
+        <div class="form-container">
+	    <h2>API Setup</h2>
+            Use the following URL as your base for <a href="https://github.com/Tanq16/ExpenseOwl?tab=readme-ov-file#rest-api" target="_blank">API calls</a>:
+            <br/>
+            <br/>
+            <iframe style="width: 100%; height: 55px; margin: 0; border: 0;" id="offer-iframe"></iframe>
+        </div>
+</body>
+</html>
