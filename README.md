@@ -22,11 +22,9 @@
 
 # Why Create This?
 
-There are a ton of amazing projects for expense tracking across GitHub ([Actual](https://github.com/actualbudget/actual), [Firefly III](https://github.com/firefly-iii/firefly-iii), etc.). They're all incredible, but they aren't the *fastest* when trying to add expenses and offer many features I don't use. Some use varying formats of data or complex APIs. *Don't get me wrong*, they're great when needed, but I wanted something dead simple that only gives me a monthly pie chart and a tabular representation. NOTHING else!
+There are a ton of amazing projects for expense tracking across GitHub ([Actual](https://github.com/actualbudget/actual), [Firefly III](https://github.com/firefly-iii/firefly-iii), etc.). They're all incredible, but they aren't the *fastest* when trying to add expenses and offer many features I don't use. Some use varying formats of data or complex budgeting or complex APIs. *Don't get me wrong*, they're incredible when fully utilized, but I wanted something dead simple that only gives me a monthly pie chart and a tabular representation. NOTHING else!
 
-Hence, I created this project, which I use in my home lab to track my expenses. The data is just JSON, so I can do whatever I want with it, including using `jq` to convert to CSV. The UI is elegant and mobile-friendly.
-
-This app's intention is to track spending across your categories in a simplistic manner. There is no complicated searching or editing - just add, delete, and view! This intention will not change throughout the project's lifecycle. This is not an app for budgeting; it's for tracking.
+So, I created this project, which I use in my home lab to track my expenses. This app's intention is to track spending across your categories (custom or pre-defined) in a simplistic manner. There is no complicated searching or editing - just `add`, `delete`, and `view`! This intention will not change throughout the project's lifecycle. This is *not* an app for budgeting; it's for straightforward tracking.
 
 # Features
 
@@ -38,10 +36,9 @@ This app's intention is to track spending across your categories in a simplistic
 - Multi-architecture Docker container with support for persistent storage
 - REST API for expense management
 - Single-user focused (mainly for a home lab deployment)
-- CSV export of all expense data from the UI
-- CLI for both server and client (if needed) operations
-- Custom categories via environment variable (`EXPENSE_CATEGORIES`) with sensible defaults
-- Custom currency symbol in the frontend via environment variable (`CURRENCY`)
+- CSV and JSON export of all expense data from the UI
+- Custom categories via app settings or environment variable (`EXPENSE_CATEGORIES`)
+- Custom currency symbol in the frontend via app settings environment variable (`CURRENCY`)
 
 ### Visualization
 
@@ -53,6 +50,7 @@ This app's intention is to track spending across your categories in a simplistic
     - This is where you can view individual expenses chronologically and delete them
     - You can use the browser's search to find a name if needed
 3. Month-by-month navigation
+4. Settings page for setting custom categories, currency, and export data as CSV or JSON
 
 ### Progressive Web App (PWA)
 
@@ -68,9 +66,9 @@ I reiterate that you should use this to add expenses quickly. The default name f
 
 In the ideal case, `enter the amount and choose the category` - that's it!
 
-For a bit more involved case, `enter the amount and name, choose the category, and select the date` - still very simple!
+For a bit more involved case, `enter the name, choose the category, enter the amount, and select the date` - still very simple!
 
-The application only allows addition and deletion; there's no need for editing. There are no tags, wallet info, budgeting, or anything else! Plain and simple for the win.
+The application only allows addition and deletion; there's no need for editing (if needed, just delete and re-add). There are no tags, wallet info, budgeting, or anything else! Plain and simple for the win.
 
 # Screenshots
 
@@ -132,6 +130,10 @@ cd expenseowl
 go build ./cmd/expenseowl
 ```
 
+### Kubernetes Deployment
+
+The project also has a community-built Kubernetes spec. The spec is a sample and you should review it before deploying it within your cluster. Read the [associated readme](./kubernetes/README.md) for more information.
+
 # Usage
 
 Ideally, once deployed, use the web interface and you're good to go. Access the web interface through your browser:
@@ -144,29 +146,19 @@ Ideally, once deployed, use the web interface and you're good to go. Access the 
 
 If command-line automations are required for use with the REST API, read on!
 
-### CLI Mode
+### Executable
 
-The application binary can run in either server or client mode:
-
-Server Mode (Default):
+The application binary can be run directly within CLI for any common OS and architecture:
 
 ```bash
 ./expenseowl
-# or explicitly
-./expenseowl -serve
 # or from a custom directory
 ./expenseowl -data /custom/path
 ```
 
-Client Mode:
-
-```bash
-./expenseowl -client -addr localhost:8080
-```
-
-In client mode, you'll be prompted to enter the expense name, category (select from a list), amount, and date (in YYYY-MM-DD; optional, sets to the current date when not provided).
-
 ### REST API
+
+ExpenseOwl provides an API to allow adding expenses via automations or simply via cURL, Siri Shortcuts, or other automations.
 
 Add Expense:
 
@@ -189,25 +181,29 @@ curl http://localhost:8080/expenses
 
 ### Config Options
 
+The primary config is stored in the data directory in the `config.json` file. A pre-defined configuration is automatically initialized. The currency in use and the categories can be customized from the `/settings` endpoint within the UI.
+
 ##### Currency Settings
 
-ExpenseOwl supports multiple currencies through the CURRENCY environment variable. If not specified, it defaults to USD ($). For example, to run with Euro, use the following environment variable:
+ExpenseOwl supports multiple currencies through the CURRENCY environment variable. If not specified, it defaults to USD ($). All available options are shown in the UI settings page.
+
+Alternatively, an environment variable can also be used to set the currency. This is useful for containerized deployments where non-sensitive configuration can remain as deployment templates. For example, to use Euro:
 
 ```bash
 CURRENCY=eur ./expenseowl
 ```
 
-Similarly, the environment variable can be set in a compose stack or using `-e` in the command line with a Docker command. The full list of supported currencies is in [this file](https://github.com/Tanq16/ExpenseOwl/blob/main/internal/config/config.go#L27).
+The environment variable can be set in a compose stack or using `-e` in the command line with a Docker command.
 
 ##### Category Settings
 
-ExpenseOwl also supports custom categories, which can be specified through environment variables like so:
+ExpenseOwl also supports custom categories. A default set is pre-loaded in the config for ease of use and can be easily changed within the UI.
+
+Alternatively, like currency, categories can also be specified in an environment variable like so:
 
 ```bash
 EXPENSE_CATEGORIES="Rent,Food,Transport,Fun,Bills" ./expenseowl
 ```
-
-Similarly, it can be specified in a Docker compose stack of a Docker CLI command with the `-e` flag. Refer to the examples shown above in the README.
 
 # Contributing
 
