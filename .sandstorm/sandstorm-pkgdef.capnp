@@ -19,9 +19,9 @@ const pkgdef :Spk.PackageDefinition = (
 
     appTitle = (defaultText = "ExpenseOwl"),
 
-    appVersion = 1,  # Increment this for every release.
+    appVersion = 2,  # Increment this for every release.
 
-    appMarketingVersion = (defaultText = "3.11"),
+    appMarketingVersion = (defaultText = "3.15"),
 
     actions = [
       # Define your "new document" handlers here.
